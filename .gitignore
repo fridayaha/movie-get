@@ -39,6 +39,9 @@ typings/
 # dotenv environment variables file
 .env
 .vscode
+.idea
+*.iml
+target
 # ignore sh
 sh/
 # ignore test sdk.config.json
