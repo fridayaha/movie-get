@@ -37,24 +37,24 @@
       "pagePath": "pages/popular/popular",
       "iconPath": "dist/images/popular_icon.png",
       "selectedIconPath": "dist/images/popular_active_icon.png",
-      "text": "热映"
+      "text": "最新上线"
     }, {
       "pagePath": "pages/coming/coming",
       "iconPath": "dist/images/coming_icon.png",
       "selectedIconPath": "dist/images/coming_active_icon.png",
-      "text": "待映"
+      "text": "即将上线"
     },
     {
       "pagePath": "pages/top/top",
       "iconPath": "dist/images/top_icon.png",
       "selectedIconPath": "dist/images/top_active_icon.png",
-      "text": "口碑"
+      "text": "电影排行"
     },
     {
       "pagePath": "pages/my/my",
       "iconPath": "dist/images/my_icon.png",
       "selectedIconPath": "dist/images/my_active_icon.png",
-      "text": "我的"
+      "text": "我的信息"
     }]
   },
   "networkTimeout": {

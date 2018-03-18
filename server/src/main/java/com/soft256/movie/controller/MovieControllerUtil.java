@@ -1,11 +1,14 @@
 package com.soft256.movie.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.soft256.movie.engine.DownloadPathFetchEngine;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -21,8 +24,11 @@ public class MovieControllerUtil {
     private final static Map<String, List<String>> MOVIE_DOWNLOAD_PATH_CACHE = new HashMap<String, List<String>>();
 
     private final static File MOVIE_CACHE_FILE = new File("/home/movieCache.json");
+    public final static File MOVIE_NEWEST_FILE = new File("/home/movieNewest.json");
 
     private static String KEY_AUTO_FETCH_START_TIME = "startTime";
+
+    private final static List<DownloadPathFetchEngine> ENGINES = new ArrayList<>();
 
     public static Map<String, List<String>> getMovieDownloadPathCache() {
         return MOVIE_DOWNLOAD_PATH_CACHE;
@@ -65,20 +71,41 @@ public class MovieControllerUtil {
     }
 
     /**
-     * 判断电影名称是否相同
+     * 获取下载路径解析引擎
      *
-     * @param movieName
-     * @param movieTitle
      * @return
      */
-    public static boolean nameMatch(String movieName, String movieTitle) {
-        String fetchMovieName = movieTitle.substring(movieTitle.indexOf("《") + 1, movieTitle.indexOf("》")).trim();
-        if (movieName.equals(fetchMovieName)) {
-            return true;
+    public static List<DownloadPathFetchEngine> getEngines() {
+        return ENGINES;
+    }
+
+    public static void initEngines() {
+        InputStream enginesConfResource = Thread.currentThread().getContextClassLoader().getResourceAsStream("engine.conf");
+        if (null != enginesConfResource) {
+            Properties properties = new Properties();
+            try {
+                properties.load(enginesConfResource);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            for (Object key : properties.keySet()) {
+                String engineClassName = (String) key;
+                try {
+                    Object engineInstance = Class.forName(engineClassName).newInstance();
+                    if (engineInstance instanceof DownloadPathFetchEngine) {
+                        ENGINES.add((DownloadPathFetchEngine) engineInstance);
+                    }
+                } catch (Exception e) {
+                    logger.error("Init engine named " + engineClassName + " error", e);
+                }
+            }
+
+            //对处理优先级进行排序
+            ENGINES.sort((o1, o2) -> {
+                        return properties.get(o1.getClass().getName()).toString().compareTo(properties.get(o2.getClass().getName()).toString());
+                    }
+            );
         }
-        if (movieName.replace("：", "").equals(fetchMovieName.replace(":", ""))) {
-            return true;
-        }
-        return false;
     }
 }

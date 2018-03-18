@@ -14,7 +14,7 @@ Page({
 		wx.showNavigationBarLoading()
     wx.hideNavigationBarLoading()
     wx.setNavigationBarTitle({
-      title: '正在热映'
+      title: '最新上线'
     })
     douban.fetchFilms.call(that, config.apiList.popular, that.data.start)
 	},

@@ -10,10 +10,10 @@ shakeWelcomeImg: 摇一摇欢迎图片
 */
 var url = '/dist'
 module.exports = {
-  city: '',
+  city: 'nanjing',
   count: 20,
   apiList: {
-    popular: 'https://www.soft256.com/v2/movie/in_theaters',
+    popular: 'https://www.soft256.com/v2/movie/newest',
     coming: 'https://www.soft256.com/v2/movie/coming_soon',
     top: 'https://www.soft256.com/v2/movie/top250',
     search: {
@@ -25,10 +25,10 @@ module.exports = {
   },
   hotTag: ['动作', '喜剧', '爱情', '悬疑'],
   bannerList: [
-    { type: 'film', id: '26683290', imgUrl: url + '/images/banner_1.jpg' },
-    { type: 'film', id: '25793398', imgUrl: url + '/images/banner_2.jpg' },
-    { type: 'film', id: '26630781', imgUrl: url + '/images/banner_3.jpg' },
-    { type: 'film', id: '26415200', imgUrl: url + '/images/banner_4.jpg' },
+    { type: 'film', id: '26698897', imgUrl: url + '/images/banner_1.png' },
+    { type: 'film', id: '26752852', imgUrl: url + '/images/banner_2.png' },
+    { type: 'film', id: '6390825', imgUrl: url + '/images/banner_3.png' },
+    { type: 'film', id: '3445906', imgUrl: url + '/images/banner_4.png' },
     { type: 'film', id: '3025375', imgUrl: url + '/images/banner_5.jpg' }
   ],
   skinList: [

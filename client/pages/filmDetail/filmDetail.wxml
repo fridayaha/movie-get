@@ -70,9 +70,9 @@
         <view class="fd-bd-title">下载链接          
         </view>
       </block>
-      <view>
+      <view class="fd-bd-tag">
         <block wx:for="{{filmDetail.downloads}}" wx:for-item="filmdownloadLink">
-          <view data-id="{{filmdownloadLink}}" bindtap="copyToClipboard">{{filmdownloadLink}}</view>
+          <view class="fd-bd-tag-item" data-id="{{filmdownloadLink}}" bindtap="copyToClipboard">链接{{index+1}}</view>
         </block>
       </view>
     </view>
