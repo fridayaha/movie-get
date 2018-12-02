@@ -8,6 +8,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -17,6 +18,7 @@ import java.util.List;
 /**
  * Created by friday on 2018/3/17.
  */
+@Service("Cililianc")
 public class FetchEngineForCililianc implements DownloadPathFetchEngine {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

@@ -1,9 +1,8 @@
 package com.soft256.movie.engine.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.soft256.movie.controller.MovieControllerUtil;
+import com.soft256.movie.controller.MovieControllerConstants;
 import com.soft256.movie.engine.DownloadPathFetchEngine;
-import org.apache.commons.io.FileUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -11,21 +10,32 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by friday on 2018/3/17.
  */
+@Service("Ygdy8")
 public class FetchEngineForYgdy8 implements DownloadPathFetchEngine {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private static final String MAIN_PAGE_URL = "http://www.ygdy8.com";
+
+    private static final String MAIN_PAGE_URL = "https://www.ygdy8.com/";
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     public List<String> fetchDownloadPath(String movieName) {
         String encodedName = movieName;
@@ -88,9 +98,6 @@ public class FetchEngineForYgdy8 implements DownloadPathFetchEngine {
         String searchURL = MAIN_PAGE_URL + "/html/gndy/dyzz/index.html";
         String doubanMovieSearch = "https://api.douban.com/v2/movie/search?q={q}&start=0&count=1";
 
-        Map<String, Object> totalsubject = new HashMap<>();
-        List totalSubjects = new ArrayList();
-
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper mapper = new ObjectMapper();
 
@@ -119,21 +126,20 @@ public class FetchEngineForYgdy8 implements DownloadPathFetchEngine {
                 List<String> downloadPaths = new ArrayList<>(5);
                 parserMovieDetail(MAIN_PAGE_URL + hrefLinkElement.attr("href"), downloadPaths);
                 subjectMap.put("downloads", downloadPaths);
-                totalSubjects.add(subjectMap);
+                String movieId = (String) subjectMap.get("id");
+                String subjectContent = mapper.writeValueAsString(subjectMap);
+                writeMovieInfoToRedis(movieId, subjectContent);
             } catch (Exception e) {
                 logger.error("Parser movie info error.", e);
             }
         });
-        totalsubject.put("subjects", totalSubjects);
-        totalsubject.put("count", 20);
-        totalsubject.put("start", 0);
-        totalsubject.put("total", totalSubjects.size());
-        totalsubject.put("last_update_time", new Date());
+    }
 
+    private void writeMovieInfoToRedis(String movieId, String subjectContent) {
         try {
-            FileUtils.writeStringToFile(MovieControllerUtil.MOVIE_NEWEST_FILE, mapper.writeValueAsString(totalsubject));
+            redisTemplate.opsForValue().set(MovieControllerConstants.MOVIE_ID_PREFIX.concat(movieId), subjectContent);
         } catch (Exception e) {
-            logger.error("Write newest movie list to file error", e);
+            logger.error("Write movie info to redis error,movie id is " + movieId);
         }
     }
 

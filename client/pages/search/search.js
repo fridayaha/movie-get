@@ -39,6 +39,10 @@ Page({
   search: function (e) {
     var that = this
     var keyword = e.detail.value.keyword
+    if (e.type =="confirm"){
+        keyword = e.detail.value
+    }
+    
     if (keyword == '') {
       message.show.call(that, {
         content: '请输入内容',
